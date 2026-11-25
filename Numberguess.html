@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Guessing Game</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+    }
+
+    .game {
+      width: 90%;
+      max-width: 420px;
+      padding: 35px;
+      text-align: center;
+      background: #ffffff12;
+      border: 1px solid #ffffff30;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px #0005;
+    }
+
+    h1 {
+      color: #a78bfa;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #8b5cf6;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #7c3aed;
+    }
+
+    #message {
+      margin-top: 20px;
+      min-height: 24px;
+      font-size: 17px;
+    }
+
+    #restart {
+      display: none;
+      margin-top: 12px;
+      background: #16a34a;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game">
+    <h1>Number Guessing Game</h1>
+
+    <p>Guess a number between 1 and 100</p>
+    <p>Attempts remaining: <span id="attempts">10</span></p>
+
+    <input
+      type="number"
+      id="guess"
+      min="1"
+      max="100"
+      placeholder="Enter your guess"
+    >
+
+    <button onclick="checkGuess()">Submit Guess</button>
+
+    <p id="message">Let's start the game!</p>
+
+    <button id="restart" onclick="restartGame()">
+      Restart Game
+    </button>
+  </div>
+
+  <script>
+    let numToGuess;
+    let attempts;
+    let gameOver;
+
+    function startGame() {
+      numToGuess = Math.floor(Math.random() * 100) + 1;
+      attempts = 10;
+      gameOver = false;
+
+      document.getElementById("attempts").textContent = attempts;
+      document.getElementById("message").textContent =
+        "Let's start the game!";
+
+      document.getElementById("guess").value = "";
+      document.getElementById("guess").disabled = false;
+
+      document.querySelector("button").disabled = false;
+      document.getElementById("restart").style.display = "none";
+    }
+
+    function checkGuess() {
+      if (gameOver) return;
+
+      const input = document.getElementById("guess");
+      const userguess = Number(input.value);
+      const message = document.getElementById("message");
+
+      if (input.value === "" || !Number.isInteger(userguess) ||
+          userguess < 1 || userguess > 100) {
+        message.textContent = "Enter a valid number between 1 and 100.";
+        return;
+      }
+
+      attempts--;
+
+      if (userguess === numToGuess) {
+        message.textContent =
+          "🎉 Congratulations! You guessed the number!";
+        message.style.color = "#4ade80";
+        endGame();
+      }
+      else if (userguess < numToGuess) {
+        message.textContent = "📈 The number is greater than " + userguess;
+      }
+      else {
+        message.textContent = "📉 The number is less than " + userguess;
+      }
+
+      document.getElementById("attempts").textContent = attempts;
+
+      if (attempts === 0 && userguess !== numToGuess) {
+        message.textContent =
+          "Game Over! The number was " + numToGuess;
+        message.style.color = "#f87171";
+        endGame();
+      }
+
+      input.value = "";
+      input.focus();
+    }
+
+    function endGame() {
+      gameOver = true;
+      document.getElementById("guess").disabled = true;
+      document.querySelector("button").disabled = true;
+      document.getElementById("restart").style.display = "block";
+    }
+
+    function restartGame() {
+      document.getElementById("message").style.color = "white";
+      startGame();
+    }
+
+    startGame();
+  </script>
+
+</body>
+</html>
